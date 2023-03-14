@@ -1,44 +1,72 @@
-
+import { useFormik } from "formik";
 
 const Form = () => {
+    const formik = useFormik({
+        initialValues: {
+          name: '',
+          email: '',
+          amount: 0,
+          currency: '',
+          text: '',
+          terms: false
+        },
+        onSubmit: values => console.log(JSON.stringify(values, null, 2)),
+    });
+
     return (
-        <form className="form">
+        <form className="form" onSubmit={formik.handleSubmit}>
             <h2>Donate</h2>
             <label htmlFor="name">Your name</label>
             <input
                 id="name"
                 name="name"
                 type="text"
+                value={formik.values.name}
+                onChange={formik.handleChange}
             />
             <label htmlFor="email">Email</label>
             <input
                 id="email"
                 name="email"
                 type="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
             />
             <label htmlFor="amount">Sum</label>
             <input
                 id="amount"
                 name="amount"
                 type="number"
+                value={formik.values.amount}
+                onChange={formik.handleChange}
             />
             <label htmlFor="currency">Currency</label>
             <select
                 id="currency"
-                name="currency">
+                name="currency"
+                value={formik.values.currency}
+                onChange={formik.handleChange}
+            >
                     <option value="">Choose currency</option>
                     <option value="USD">USD</option>
                     <option value="UAH">UAH</option>
-                    <option value="RUB">RUB</option>
+                    <option value="EUR">EUR</option>
             </select>
             <label htmlFor="text">Leave a message</label>
             <textarea 
                 id="text"
                 name="text"
+                value={formik.values.text}
+                onChange={formik.handleChange}
             />
             <label className="checkbox">
-                <input name="terms" type="checkbox" />
-                Accept our privacy policy
+                <input 
+                    name="terms" 
+                    type="checkbox" 
+                    value={formik.values.terms}
+                    onChange={formik.handleChange}
+                />
+                Accept our privacy policy terms
             </label>
             <button type="submit">Send</button>
         </form>
