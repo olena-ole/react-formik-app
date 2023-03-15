@@ -1,5 +1,35 @@
 import { useFormik } from "formik";
 
+const validate = (values) => {
+    const errors = {};
+
+    if (!values.name) {
+        errors.name = 'Required';
+    } else if (values.name.length < 2) {
+        errors.name = 'The name is too short';
+    }
+  
+    if (!values.email) {
+        errors.email = 'Required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = 'Invalid email address';
+    }
+  
+    if (values.amount <= 0) {
+        errors.amount = 'Enter the sum you want to donate'
+    }
+
+    if (!values.currency) {
+        errors.currency = 'Please choose a currency'
+    }
+
+    if (!values.terms) {
+        errors.terms = 'You have to accept our privacy terms'
+    }
+  
+    return errors;
+};
+
 const Form = () => {
     const formik = useFormik({
         initialValues: {
@@ -10,6 +40,7 @@ const Form = () => {
           text: '',
           terms: false
         },
+        validate,
         onSubmit: values => console.log(JSON.stringify(values, null, 2)),
     });
 
@@ -24,6 +55,7 @@ const Form = () => {
                 value={formik.values.name}
                 onChange={formik.handleChange}
             />
+            {formik.errors.name && <div>{formik.errors.name}</div>}
             <label htmlFor="email">Email</label>
             <input
                 id="email"
@@ -32,6 +64,7 @@ const Form = () => {
                 value={formik.values.email}
                 onChange={formik.handleChange}
             />
+            {formik.errors.email && <div>{formik.errors.email}</div>}
             <label htmlFor="amount">Sum</label>
             <input
                 id="amount"
@@ -40,6 +73,7 @@ const Form = () => {
                 value={formik.values.amount}
                 onChange={formik.handleChange}
             />
+            {formik.errors.amount && <div>{formik.errors.amount}</div>}
             <label htmlFor="currency">Currency</label>
             <select
                 id="currency"
@@ -52,6 +86,7 @@ const Form = () => {
                     <option value="UAH">UAH</option>
                     <option value="EUR">EUR</option>
             </select>
+            {formik.errors.currency && <div>{formik.errors.currency}</div>}
             <label htmlFor="text">Leave a message</label>
             <textarea 
                 id="text"
@@ -68,6 +103,7 @@ const Form = () => {
                 />
                 Accept our privacy policy terms
             </label>
+            {formik.errors.terms && <div>{formik.errors.terms}</div>}
             <button type="submit">Send</button>
         </form>
     )
