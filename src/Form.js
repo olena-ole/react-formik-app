@@ -1,34 +1,5 @@
 import { useFormik } from "formik";
-
-const validate = (values) => {
-    const errors = {};
-
-    if (!values.name) {
-        errors.name = 'Required';
-    } else if (values.name.length < 2) {
-        errors.name = 'The name is too short';
-    }
-  
-    if (!values.email) {
-        errors.email = 'Required';
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        errors.email = 'Invalid email address';
-    }
-  
-    if (values.amount <= 0) {
-        errors.amount = 'Enter the sum you want to donate'
-    }
-
-    if (!values.currency) {
-        errors.currency = 'Please choose a currency'
-    }
-
-    if (!values.terms) {
-        errors.terms = 'You have to accept our privacy terms'
-    }
-  
-    return errors;
-};
+import * as Yup from 'yup';
 
 const Form = () => {
     const formik = useFormik({
@@ -40,7 +11,24 @@ const Form = () => {
           text: '',
           terms: false
         },
-        validate,
+        validationSchema: Yup.object({
+            name: Yup.string()
+                .min(2, 'The name is too short')
+                .required('Required'),
+            email: Yup.string()
+                .email('Invalid email address')
+                .required('Required'),
+            amount: Yup.number()
+                .moreThan(0, 'Enter valid sum')
+                .required('Enter the sum you want to donate'),
+            currency: Yup.string()
+                .required('Please choose a currency'),
+            text: Yup.string()
+                .min(10, 'The message is too short'),
+            terms: Yup.boolean()
+                .oneOf([true], "The terms and conditions must be accepted.")
+                .required('You have to accept our privacy terms')
+        }),
         onSubmit: values => console.log(JSON.stringify(values, null, 2)),
     });
 
@@ -56,7 +44,7 @@ const Form = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
             />
-            {formik.errors.name && formik.touched.name && <div>{formik.errors.name}</div>}
+            {formik.errors.name && formik.touched.name && <div className="error">{formik.errors.name}</div>}
             <label htmlFor="email">Email</label>
             <input
                 id="email"
@@ -66,7 +54,7 @@ const Form = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
             />
-            {formik.errors.email && formik.touched.email && <div>{formik.errors.email}</div>}
+            {formik.errors.email && formik.touched.email && <div className="error">{formik.errors.email}</div>}
             <label htmlFor="amount">Sum</label>
             <input
                 id="amount"
@@ -76,7 +64,7 @@ const Form = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
             />
-            {formik.errors.amount && formik.touched.amount && <div>{formik.errors.amount}</div>}
+            {formik.errors.amount && formik.touched.amount && <div className="error">{formik.errors.amount}</div>}
             <label htmlFor="currency">Currency</label>
             <select
                 id="currency"
@@ -90,7 +78,7 @@ const Form = () => {
                     <option value="UAH">UAH</option>
                     <option value="EUR">EUR</option>
             </select>
-            {formik.errors.currency && formik.touched.currency && <div>{formik.errors.currency}</div>}
+            {formik.errors.currency && formik.touched.currency && <div className="error">{formik.errors.currency}</div>}
             <label htmlFor="text">Leave a message</label>
             <textarea 
                 id="text"
@@ -98,6 +86,7 @@ const Form = () => {
                 value={formik.values.text}
                 onChange={formik.handleChange}
             />
+            {formik.errors.text && formik.touched.text && <div className="error">{formik.errors.text}</div>}
             <label className="checkbox">
                 <input 
                     name="terms" 
@@ -108,7 +97,7 @@ const Form = () => {
                 />
                 Accept our privacy policy terms
             </label>
-            {formik.errors.terms && formik.touched.terms && <div>{formik.errors.terms}</div>}
+            {formik.errors.terms && formik.touched.terms && <div className="error">{formik.errors.terms}</div>}
             <button type="submit">Send</button>
         </form>
     )
