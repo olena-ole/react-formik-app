@@ -47,7 +47,11 @@ const MyForm = () => (
                 .oneOf([true], "The terms and conditions must be accepted.")
                 .required('You have to accept our privacy terms')
         })} 
-        onSubmit={values => console.log(JSON.stringify(values, null, 2))}
+        onSubmit={(values, actions) => {
+            console.log(JSON.stringify(values, null, 2))
+            actions.setSubmitting(false);
+            actions.resetForm();
+        }}
     >
         {({ isSubmitting }) => (
             <Form className="form">
