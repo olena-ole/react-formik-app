@@ -1,5 +1,16 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, useField } from 'formik';
 import * as Yup from 'yup';
+
+const MyTextInput = ({ label, ...props }) => {
+    const [field, meta] = useField(props);
+    return (
+      <>
+        <label htmlFor={props.name}>{label}</label>
+        <input {...field} {...props} />
+        {meta.touched && meta.error && <div className="error">{meta.error}</div>}
+      </>
+    );
+  };
 
 const MyForm = () => (
     <Formik
@@ -28,17 +39,9 @@ const MyForm = () => (
             <Form className="form">
                 <h2>Donate</h2>
 
-                <label htmlFor="name">Your name</label>
-                <Field type="text" name="name" id="name" />
-                <ErrorMessage name="name" component="div" className="error" />
-
-                <label htmlFor="email">Email</label>
-                <Field type="email" name="email" id="email" />
-                <ErrorMessage name="email" component="div" className="error" />
-
-                <label htmlFor="amount">Sum</label>
-                <Field type="number" name="amount" id="amount" />
-                <ErrorMessage name="amount" component="div" className="error" />  
+                <MyTextInput name="name" type="text" label="Name" id="name"/>
+                <MyTextInput name="email" type="email" label="Email" id="email"/>
+                <MyTextInput name="amount" type="number" label="Sum" id="amount"/>
 
                 <label htmlFor="currency">Currency</label>
                 <Field as="select" name="currency" id="currency">
