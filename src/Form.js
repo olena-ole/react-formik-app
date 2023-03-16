@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 const MyTextInput = ({ label, ...props }) => {
     const [field, meta] = useField(props);
+
     return (
       <>
         <label htmlFor={props.name}>{label}</label>
@@ -10,7 +11,20 @@ const MyTextInput = ({ label, ...props }) => {
         {meta.touched && meta.error && <div className="error">{meta.error}</div>}
       </>
     );
-  };
+};
+
+const MyCheckBox = ({children, ...props}) => {
+    const [field, meta] = useField({...props, type: 'checkbox'});
+    return (
+        <>
+            <label className="checkbox">
+                <input {...field} {...props} type="checkbox"/>
+                {children}
+            </label>
+            {meta.touched && meta.error && <div className="error">{meta.error}</div>}
+        </>
+    )
+}
 
 const MyForm = () => (
     <Formik
@@ -56,11 +70,7 @@ const MyForm = () => (
                 <Field as="textarea" name="text" id="text" />
                 <ErrorMessage name="text" component="div" className="error" />
 
-                <label className="checkbox">
-                    <Field type="checkbox" name="terms" id="terms" />
-                    Accept our privacy policy terms
-                </label>
-                <ErrorMessage name="terms" component="div" className="error" />
+                <MyCheckBox name="terms" id="terms">Accept our privacy policy terms</MyCheckBox>
 
                 <button type="submit" disabled={isSubmitting}>
                     Send
